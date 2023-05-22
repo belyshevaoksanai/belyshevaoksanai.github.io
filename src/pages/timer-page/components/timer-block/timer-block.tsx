@@ -1,7 +1,7 @@
 import { Box, BoxProps, Typography, styled } from "@mui/material"
 import { Timer } from "../timer/timer";
 import { useSelector } from "react-redux";
-import { selectorFirstTask } from "../../../../store/task/selector";
+import { selectorFirstTask } from "../../../../store/timer/selector";
 
 const TimerWrapperBlock = styled(Box)<BoxProps>(({ theme }) => ({
     '&.MuiBox-root': {
@@ -22,8 +22,15 @@ const TitleWrapperBlock = styled(Box)<BoxProps>(({ theme }) => ({
     },
 }));
 
-export const TimerBlock = () => {
+interface ITimerBlockProps {
+    startTimer: () => void;
+    stopTimer: () => void;
+    pauseTimer: () => void;
+}
+
+export const TimerBlock = (props: ITimerBlockProps) => {
     const firstTask = useSelector(selectorFirstTask);
+
     if (!firstTask) {
         return (
             <TimerWrapperBlock>
@@ -39,11 +46,17 @@ export const TimerBlock = () => {
     return (
         <TimerWrapperBlock>
             <TitleWrapperBlock>
-                <Typography>{firstTask.name}</Typography>
-                <Typography>Помидор {firstTask.count}</Typography>
+                {
+                    firstTask.type === 'USER' && (
+                        <>
+                            <Typography>{firstTask.name}</Typography>
+                            <Typography>Помидор {firstTask.count}</Typography>
+                        </>
+                    )
+                }
             </TitleWrapperBlock>
             <Box display="flex" alignItems="center" height="452px">
-                <Timer/>
+                <Timer {...props} />
             </Box>
         </TimerWrapperBlock>
     )

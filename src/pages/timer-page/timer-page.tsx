@@ -4,7 +4,13 @@ import { AddTaskForm } from "./components/add-task-form";
 import { TaskList } from "./components/task-list/task-list";
 import { TimerBlock } from "./components/timer-block";
 
-export const TimerPage = () => (
+interface ITimerProps {
+    startTimer: () => void;
+    stopTimer: () => void;
+    pauseTimer: () => void;
+}
+
+export const TimerPage = (props: ITimerProps) => (
     <Box display='flex'>
         <Box width="550px">
             <Description/>
@@ -14,7 +20,7 @@ export const TimerPage = () => (
             </Box>
         </Box>
         <Box>
-            <TimerBlock />
+            <TimerBlock {...props} />
         </Box>
     </Box>
 )

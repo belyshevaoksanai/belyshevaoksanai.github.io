@@ -1,31 +1,51 @@
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { timerAction } from '../store/timer/timer';
+import { TimerStatusEnum } from '../constants/timer-status';
+import { useSelector } from 'react-redux';
+import { selectorFirstTask, selectorTimerStatus } from '../store/timer/selector';
 
-const useCountdown = (): [() => void, () => void, {minutes: number, seconds: number}]  => {
-  const [countDown, setCountDown] = useState({
-    minutes: 25,
-    seconds: 0,
-  });
+const useCountdown = (): [() => void, () => void, () => void] => {
+  const dispatch = useDispatch();
+  
+  const task = useSelector(selectorFirstTask);
+  const status = useSelector(selectorTimerStatus);
   const [intervalId, setIntervalId] = useState<NodeJS.Timer>();
+  
+  useEffect(() => {
+    if (status === TimerStatusEnum.INIT || status === TimerStatusEnum.PAUSE) {
+      clearInterval(intervalId);
+    }
+  }, [status]);
 
   useEffect(() => {
     return () => clearInterval(intervalId);
-  }, []);
+  }, [intervalId]);
 
   const handleStartTimer = () => {
+    dispatch(timerAction.setStatus(TimerStatusEnum.IN_PROGRESS));
+    dispatch(timerAction.startTimer(task));
     const interval = setInterval(() => {
-        setCountDown((prevState) => ({
-          minutes: prevState.seconds === 0 ? prevState.minutes - 1 : prevState.minutes,
-          seconds: prevState.seconds === 0 ? 59 : prevState.seconds - 1,
-        }));
-      }, 1000);
+      dispatch(timerAction.substractSecond());
+    }, 1000);
     setIntervalId(interval);
   }
 
   const handleStopTimer = () => {
+    dispatch(timerAction.clearTimer());
     clearInterval(intervalId);
   }
 
-  return [handleStartTimer, handleStopTimer, countDown];
+  const handlePauseTimer = () => {
+    dispatch(timerAction.setPauseTimer());
+    clearInterval(intervalId);
+    const interval = setInterval(() => {
+      dispatch(timerAction.addSecond());
+    }, 1000);
+    setIntervalId(interval);
+  }
+
+  return [handleStartTimer, handleStopTimer, handlePauseTimer];
 };
 
 export { useCountdown };

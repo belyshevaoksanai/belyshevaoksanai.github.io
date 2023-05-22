@@ -1,10 +1,10 @@
 import { useSelector } from "react-redux";
-import { selectorSumOfTime, selectorTaskList } from "../../../../store/task/selector";
 import { TaskItem } from "./list-item";
 import { Box, Typography } from "@mui/material";
 import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
 import { useDispatch } from "react-redux";
-import { taskAction } from "../../../../store/task/task";
+import { timerAction } from "../../../../store/timer/timer";
+import { selectorTaskList, selectorSumOfTime } from "../../../../store/timer/selector";
 
 export const TaskList = () => {
     const dispatch = useDispatch();
@@ -22,7 +22,7 @@ export const TaskList = () => {
             return;
         }
 
-        dispatch(taskAction.reorder({
+        dispatch(timerAction.reorder({
             startIndex: result.source.index,
             endIndex: result.destination.index,
         }));

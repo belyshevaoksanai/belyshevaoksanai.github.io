@@ -1,23 +1,33 @@
-import { AppBar, Box, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, Button, Toolbar } from "@mui/material";
 import { EqualizerIcon, LogoIcon } from "../../icons";
+import { useNavigate } from "react-router-dom";
 
 interface ILayoutProps {
     children: React.ReactElement;
 }
 
-export const Layout = ({ children }: ILayoutProps) => (
+export const Layout = ({ children }: ILayoutProps) => {
+    const navigate = useNavigate();
+
+    const handleStatisticsPush = () => {
+        navigate('/statistics');
+    }
+
+    const handleTimerPush = () => {
+        navigate('/timer');
+    }
+
+    return (
     <div>
         <AppBar>
             <Toolbar>
                 <Box display='flex' justifyContent='space-between' width='100%'>
-                    <Box display='flex' alignItems='center'>
-                        <LogoIcon/>
-                        <Typography color='primary'>pomodoro_box</Typography>
-                    </Box>
-                    <Box display='flex' alignItems='center'>
-                        <EqualizerIcon/>
-                        <Typography color='primary'>Статистика</Typography>
-                    </Box>
+                    <Button variant="text" startIcon={<LogoIcon />} onClick={handleTimerPush}>
+                        pomodoro_box
+                    </Button>
+                    <Button variant="text" startIcon={<EqualizerIcon />} onClick={handleStatisticsPush}>
+                        Статистика
+                    </Button>
                 </Box>
             </Toolbar>
         </AppBar>
@@ -25,4 +35,4 @@ export const Layout = ({ children }: ILayoutProps) => (
             {children}
         </Box>
     </div>
-)
+)}

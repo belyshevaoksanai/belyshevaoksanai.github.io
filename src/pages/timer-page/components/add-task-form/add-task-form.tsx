@@ -1,7 +1,7 @@
 import { Box, Button, FormHelperText, TextField } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { selectorErrorMessage, selectorTaskName } from "../../../../store/task/selector";
-import { taskAction } from "../../../../store/task/task";
+import { timerAction } from "../../../../store/timer/timer";
+import { selectorTaskName, selectorErrorMessage } from "../../../../store/timer/selector";
 
 export const AddTaskForm = () => {
     const taskName = useSelector(selectorTaskName);
@@ -11,11 +11,11 @@ export const AddTaskForm = () => {
     const handleChangeTask = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
         event.stopPropagation();
-        dispatch(taskAction.changeTaskName(event.currentTarget.value));
+        dispatch(timerAction.changeTaskName(event.currentTarget.value));
     }
 
     const handleAddTask = () => {
-        dispatch(taskAction.addTask());
+        dispatch(timerAction.addTask());
     }
 
     return (

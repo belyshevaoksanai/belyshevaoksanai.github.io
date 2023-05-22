@@ -1,10 +1,10 @@
 import { Box, BoxProps, TextField, TextFieldProps, Typography, styled } from "@mui/material"
 import { Menu } from "../menu";
 import { useDispatch } from "react-redux";
-import { taskAction } from "../../../../store/task/task";
 import { ActionEnum } from "../../../../constants/actions";
 import { useEffect, useRef, useState } from "react";
 import { confirmDialogAction } from "../../../../store/confirm-dialog/confirm-dialog";
+import { timerAction } from "../../../../store/timer/timer";
 
 const TaskWrapper = styled(Box)<BoxProps>(({ theme }) => ({
     '&.MuiBox-root:first-of-type': {
@@ -35,15 +35,15 @@ export const TaskItem = ({ name, count, id }: { name: string, count: number, id:
     const handleMenuClick = (action: ActionEnum) => {
         switch (action) {
             case ActionEnum.ADD_POMODORO:
-                dispatch(taskAction.onAddPomodoro(id))
+                dispatch(timerAction.onAddPomodoro(id))
                 break;
             case ActionEnum.DELETE_POMODORO:
-                dispatch(taskAction.onDeletePomodoro(id))
+                dispatch(timerAction.onDeletePomodoro(id))
                 break;
             case ActionEnum.DELETE_TASK:
                 dispatch(confirmDialogAction.setMessage({
                     message: 'Удалить?',
-                    onConfirm: () => dispatch(taskAction.onDeleteTask(id))
+                    onConfirm: () => dispatch(timerAction.onDeleteTask(id))
                 }));
                 break;
             case ActionEnum.EDIT_TASK:
@@ -59,7 +59,7 @@ export const TaskItem = ({ name, count, id }: { name: string, count: number, id:
     }
 
     const handleChangeTaskName = () => {
-        dispatch(taskAction.editTaskName({ id, taskName }));
+        dispatch(timerAction.editTaskName({ id, taskName }));
         setIsEditMode(false);
     }
 

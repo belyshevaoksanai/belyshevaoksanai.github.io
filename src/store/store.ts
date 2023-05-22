@@ -1,10 +1,10 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import { taskSlice } from './task/task';
 import { confirmDialogSlice } from './confirm-dialog/confirm-dialog';
+import { timerSlice } from './timer/timer';
 
 export const store = configureStore({
   reducer: {
-    task: taskSlice.reducer,
+    timer: timerSlice.reducer,
     confirmDialog: confirmDialogSlice.reducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
