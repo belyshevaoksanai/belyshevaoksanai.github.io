@@ -58,5 +58,5 @@
     "@types/react-beautiful-dnd": "^13.1.4",
     "gh-pages": "^5.0.0"
   },
-  "homepage": "http://belyshevaoksanai.github.io/"
+  "homepage": "http://belyshevaoksanai.github.io/pomodoro"
 }
