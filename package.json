@@ -32,9 +32,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
@@ -55,8 +53,6 @@
     ]
   },
   "devDependencies": {
-    "@types/react-beautiful-dnd": "^13.1.4",
-    "gh-pages": "^5.0.0"
-  },
-  "homepage": "https://belyshevaoksanai.github.io/"
+    "@types/react-beautiful-dnd": "^13.1.4"
+  }
 }
