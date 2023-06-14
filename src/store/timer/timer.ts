@@ -1,6 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { TimerStatusEnum } from "../../constants/timer-status";
-import { PAUSE_MINUTES, TIMER_MINUTES } from "../../constants/timer";
+import { LONG_PAUSE_MINUTES, PAUSE_MINUTES, TIMER_MINUTES } from "../../constants/timer";
+import { getDate } from "../../utils/get-date";
 
 interface ITaskItem {
     name: string;
@@ -16,6 +17,13 @@ export interface IUserTask extends ITaskItem {
     type: 'USER';
 }
 
+interface IHistoryItem {
+    pomodoroDone: number;
+    pauseTime: number;
+    taskTime: number;
+    pauseCount: number;
+}
+
 interface ITimer {
     taskTimer: {
         minutes: number;
@@ -25,6 +33,7 @@ interface ITimer {
         minutes: number;
         seconds: number;
     },
+    pomodoroDone: number;
     status: TimerStatusEnum;
 
     taskName: string;
@@ -33,6 +42,9 @@ interface ITimer {
     errorMessage: string;
     pauseTask: IPauseTask | null;
     playSound: boolean;
+
+    history: { [n in string]: IHistoryItem};
+    week: 0 | 1 | 2 | string;
 }
 
 const INITIAL_STATE: ITimer = {
@@ -44,6 +56,7 @@ const INITIAL_STATE: ITimer = {
         minutes: 0,
         seconds: 0,
     },
+    pomodoroDone: 0,
     status: TimerStatusEnum.INIT,
 
     taskName: '',
@@ -52,6 +65,9 @@ const INITIAL_STATE: ITimer = {
     errorMessage: '',
     pauseTask: null,
     playSound: false,
+
+    history: localStorage.getItem('history') ? JSON.parse(localStorage.getItem('history') as string): {},
+    week: 0,
 }
 
 export const timerSlice = createSlice({
@@ -90,15 +106,26 @@ export const timerSlice = createSlice({
                         }
                     } else {
                         state.list = state.list.slice(1);
+                        state.sumOfTime = state.list.reduce((res, cur) => res + cur.count * TIMER_MINUTES, 0);
                         state.pauseTask = {
                             type: 'PAUSE'
                         };
                     }
+                    state.pomodoroDone++;
                     state.taskTimer = {
-                        minutes: PAUSE_MINUTES,
+                        minutes: state.pomodoroDone % 4 === 0 ? LONG_PAUSE_MINUTES : PAUSE_MINUTES,
                         seconds: 0,
                     }
                     state.status = TimerStatusEnum.PAUSE;
+                    const currentDate = getDate();
+
+                    const currentHistory = state.history[currentDate] || {pomodoroDone: 0, pauseTime: 0, taskTime: 0, pauseCount: 0};
+                    state.history[currentDate] = {
+                        pomodoroDone: currentHistory.pomodoroDone + 1,
+                        pauseTime: currentHistory.pauseTime,
+                        taskTime: currentHistory.taskTime + TIMER_MINUTES * 60,
+                        pauseCount: currentHistory.pauseCount,
+                    }
                 }
             }
         },
@@ -134,7 +161,18 @@ export const timerSlice = createSlice({
         setStatus: (state, { payload }: PayloadAction<TimerStatusEnum>) => {
             state.status = payload;
         },
-        startTimer: (state, { payload }: PayloadAction<IUserTask | IPauseTask>) => {
+        startTimer: (state) => {
+            if (state.status === TimerStatusEnum.PAUSE_TASK) {
+                const currentDate = getDate();
+
+                const currentHistory = state.history[currentDate] || {pomodoroDone: 0, pauseTime: 0, taskTime: 0, pauseCount: 0};
+                state.history[currentDate] = {
+                    pomodoroDone: currentHistory.pomodoroDone,
+                    taskTime: currentHistory.taskTime,
+                    pauseTime: currentHistory.pauseTime + state.pauseTimer.minutes * 60 + state.pauseTimer.seconds,
+                    pauseCount: currentHistory.pauseCount + 1,
+                }
+            }
             state.status = TimerStatusEnum.IN_PROGRESS;
         },
         changeTaskName: (state, { payload }: PayloadAction<string>) => {
@@ -186,6 +224,9 @@ export const timerSlice = createSlice({
             state.list = state.list.filter((item) => item.id !== payload);
             state.sumOfTime = state.list.reduce((res, cur) => res + cur.count * TIMER_MINUTES, 0);
         },
+        setWeek: (state, { payload }: PayloadAction<0 | 1 | 2 | string>) => {
+            state.week = payload;
+        }
     }
 })
 

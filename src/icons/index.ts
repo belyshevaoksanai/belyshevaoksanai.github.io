@@ -4,3 +4,7 @@ export { MenuIcon } from './menu';
 export { AddIcon } from './add';
 export { ReduceIcon } from './reduce';
 export { EditIcon } from './edit';
+export { PomodoroIcon } from './pomodoro';
+export { FocusIcon } from './focus';
+export { ClockIcon } from './clock';
+export { CancelIcon } from './cancel';

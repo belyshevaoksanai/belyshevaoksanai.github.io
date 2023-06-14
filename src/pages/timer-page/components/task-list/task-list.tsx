@@ -4,12 +4,14 @@ import { Box, Typography } from "@mui/material";
 import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
 import { useDispatch } from "react-redux";
 import { timerAction } from "../../../../store/timer/timer";
-import { selectorTaskList, selectorSumOfTime } from "../../../../store/timer/selector";
+import { selectorTaskList, selectorSumOfTime, selectorTimerStatus } from "../../../../store/timer/selector";
+import { TimerStatusEnum } from "../../../../constants/timer-status";
 
 export const TaskList = () => {
     const dispatch = useDispatch();
     const list = useSelector(selectorTaskList);
     const times = useSelector(selectorSumOfTime);
+    const status = useSelector(selectorTimerStatus);
 
     const minutesToHours = (time: number) => {
         const minutes = time % 60 > 0 ? `${time % 60} m` : '';
@@ -18,7 +20,8 @@ export const TaskList = () => {
     };
 
     const onDragEnd = (result: DropResult) => {
-        if (!result.destination) {
+        if (!result.destination
+            || (result.destination.index === 0 && [TimerStatusEnum.IN_PROGRESS, TimerStatusEnum.PAUSE].includes(status))) {
             return;
         }
 
@@ -39,7 +42,12 @@ export const TaskList = () => {
                                 ref={provided.innerRef}
                             >
                                 {list.map((item, index) => (
-                                    <Draggable key={item.id} draggableId={item.id} index={index}>
+                                    <Draggable
+                                        key={item.id}
+                                        draggableId={item.id}
+                                        index={index}
+                                        isDragDisabled={index === 0 && [TimerStatusEnum.IN_PROGRESS, TimerStatusEnum.PAUSE].includes(status)}
+                                    >
                                         {(provided) => (
                                             <div
                                                 ref={provided.innerRef}

@@ -12,3 +12,6 @@ export const selectorErrorMessage = (state: RootState) => state.timer.errorMessa
 export const selectorTaskList = (state: RootState) => state.timer.list;
 export const selectorFirstTask = (state: RootState) => state.timer.pauseTask || state.timer.list?.[0];
 export const selectorSumOfTime = (state: RootState) => state.timer.sumOfTime;
+
+export const selectorHistiory = (state: RootState) => state.timer.history;
+export const selectorWeek = (state: RootState) => state.timer.week;

@@ -31,7 +31,7 @@ export const Layout = ({ children }: ILayoutProps) => {
                 </Box>
             </Toolbar>
         </AppBar>
-        <Box pb={10} pl={10} pt={'100px'}>
+        <Box pb={10} pl={10} pr={10} pt={'100px'} display="flex" justifyContent="center">
             {children}
         </Box>
     </div>

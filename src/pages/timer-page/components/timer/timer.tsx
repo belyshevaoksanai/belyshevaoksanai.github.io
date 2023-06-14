@@ -1,5 +1,4 @@
 import { Box, Button, Typography } from "@mui/material"
-import { useCountdown } from "../../../../hooks/use-countdown";
 import { useSelector } from "react-redux";
 import { selectorFirstTask, selectorTaskTimer, selectorTimerStatus } from "../../../../store/timer/selector";
 import { TimerStatusEnum } from "../../../../constants/timer-status";
@@ -54,13 +53,17 @@ export const Timer = ({ startTimer, stopTimer, pauseTimer }: ITimerProps) => {
                     </Button>
                 )
             }
-            <Button
-                variant="contained"
-                color="secondary"
-                onClick={stopTimer}
-            >
-                Стоп
-            </Button>
+            {
+                task.type === 'USER' && (
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={stopTimer}
+                    >
+                        Стоп
+                    </Button>
+                )
+            }
         </Box>
     </Box>)
 }

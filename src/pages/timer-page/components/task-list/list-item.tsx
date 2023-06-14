@@ -15,6 +15,7 @@ const TaskWrapper = styled(Box)<BoxProps>(({ theme }) => ({
         paddingTop: '15px',
         paddingBottom: '15px',
         display: 'flex',
+        justifyContent: 'space-between',
     },
 }));
 
@@ -43,7 +44,10 @@ export const TaskItem = ({ name, count, id }: { name: string, count: number, id:
             case ActionEnum.DELETE_TASK:
                 dispatch(confirmDialogAction.setMessage({
                     message: 'Удалить?',
-                    onConfirm: () => dispatch(timerAction.onDeleteTask(id))
+                    onConfirm: () => {
+                        dispatch(timerAction.onDeleteTask(id));
+                        dispatch(timerAction.clearTimer());
+                    },
                 }));
                 break;
             case ActionEnum.EDIT_TASK:
@@ -72,25 +76,27 @@ export const TaskItem = ({ name, count, id }: { name: string, count: number, id:
 
     return (
         <TaskWrapper>
-            <div style={{ border: '1px solid #C4C4C4', borderRadius: 100, marginRight: '10px' }}>
-                <Typography paddingX="7px">{count}</Typography>
-            </div>
-            {isEditMode ?
-                (
-                    <TextFieldWithoutBorder
-                        value={taskName}
-                        onChange={handleChangeTask}
-                        onBlur={handleChangeTaskName}
-                        inputRef={ref}
-                        variant="standard"
-                        InputProps={{
-                            disableUnderline: true,
-                        }}
-                    />
-                )
-                : (
-                    <Typography>{name}</Typography>
-                )}
+            <Box display="flex">
+                <div style={{ border: '1px solid #C4C4C4', borderRadius: 100, marginRight: '10px' }}>
+                    <Typography paddingX="7px">{count}</Typography>
+                </div>
+                {isEditMode ?
+                    (
+                        <TextFieldWithoutBorder
+                            value={taskName}
+                            onChange={handleChangeTask}
+                            onBlur={handleChangeTaskName}
+                            inputRef={ref}
+                            variant="standard"
+                            InputProps={{
+                                disableUnderline: true,
+                            }}
+                        />
+                    )
+                    : (
+                        <Typography>{name}</Typography>
+                    )}
+            </Box>
             <Menu
                 onClick={handleMenuClick}
                 count={count}
