@@ -27,7 +27,7 @@ function App() {
   return (
     <RouterProvider router={createBrowserRouter([
       {
-        path: "/",
+        path: "/pomodoro",
         element: <Root />,
         children: [
           {
