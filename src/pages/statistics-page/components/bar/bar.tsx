@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Legend, Tooltip } from "chart.js";
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Legend, Tooltip } from "chart.js/auto";
 import { useEffect, useRef, useState } from "react";
 import { Chart } from "react-chartjs-2";
 import { useDispatch } from "react-redux";
