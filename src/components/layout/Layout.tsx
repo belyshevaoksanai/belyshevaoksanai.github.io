@@ -10,11 +10,11 @@ export const Layout = ({ children }: ILayoutProps) => {
     const navigate = useNavigate();
 
     const handleStatisticsPush = () => {
-        navigate('/statistics');
+        navigate('/pomodoro/statistics');
     }
 
     const handleTimerPush = () => {
-        navigate('/timer');
+        navigate('/pomodoro/timer');
     }
 
     return (
