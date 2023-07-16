@@ -5,6 +5,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectorMessage } from '../../store/confirm-dialog/selector';
 import { confirmDialogAction } from '../../store/confirm-dialog/confirm-dialog';
+import { Box } from '@mui/material';
 
 export const ConfirmDialog = () => {
   const dispatch = useDispatch();
@@ -20,21 +21,25 @@ export const ConfirmDialog = () => {
   };
 
   return (
-      <Dialog
-        open={!!message}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {message}
-        </DialogTitle>
-        <DialogActions>
+    <Dialog
+      open={!!message}
+      onClose={handleClose}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">
+        {message}
+      </DialogTitle>
+      <DialogActions>
+        <Box justifyContent="center">
+          <div>
+            <Button variant='contained' onClick={handleConfirm} autoFocus>
+              Удалить
+            </Button>
+          </div>
           <Button onClick={handleClose}>Отмена</Button>
-          <Button onClick={handleConfirm} autoFocus>
-            Удалить
-          </Button>
-        </DialogActions>
-      </Dialog>
+        </Box>
+      </DialogActions>
+    </Dialog>
   );
 }

@@ -3,4 +3,5 @@ export enum TimerStatusEnum {
     PAUSE,
     PAUSE_TASK,
     INIT,
+    STOP,
 }

@@ -1,9 +1,6 @@
-import { TimerStatusEnum } from "../../constants/timer-status";
 import { RootState } from "../store";
 
-export const selectorTaskTimer = (state: RootState) => state.timer.status === TimerStatusEnum.PAUSE_TASK
-    ? state.timer.pauseTimer
-    : state.timer.taskTimer;
+export const selectorTaskTimer = (state: RootState) => state.timer.taskTimer;
 export const selectorTimerStatus = (state: RootState) => state.timer.status;
 export const selectorPlaySound = (state: RootState) => state.timer.playSound;
 

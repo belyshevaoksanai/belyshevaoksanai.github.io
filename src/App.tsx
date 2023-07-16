@@ -14,7 +14,7 @@ import { timerAction } from './store/timer/timer';
 function App() {
   const dispatch = useDispatch();
   const playSound = useSelector(selectorPlaySound);
-  const [startTimer, stopTimer, pauseTimer] = useCountdown();
+  const [startTimer, stopTimer, pauseTimer, skipPause] = useCountdown();
   const [play] = useSound(alarm);
 
   useEffect(() => {
@@ -36,6 +36,8 @@ function App() {
               startTimer={startTimer}
               stopTimer={stopTimer}
               pauseTimer={pauseTimer}
+              skipPause={skipPause}
+              doneTask={() => dispatch(timerAction.doneTask())}
             />,
           },
           {

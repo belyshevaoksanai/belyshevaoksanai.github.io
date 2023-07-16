@@ -79,6 +79,7 @@ export const PomodoroBar = () => {
   useEffect(() => {
     const weekDay = week.findIndex((item) => item === selectedDay);
     setBackgroundColor(labels.map((_item, index) => index === weekDay ? '#DC3E22' : '#EA8A79'))
+  // eslint-disable-next-line
   }, [selectedDay, weekSelect]);
 
   const onClick = () => {

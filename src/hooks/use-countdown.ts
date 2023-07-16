@@ -3,19 +3,27 @@ import { useDispatch } from 'react-redux';
 import { timerAction } from '../store/timer/timer';
 import { TimerStatusEnum } from '../constants/timer-status';
 import { useSelector } from 'react-redux';
-import { selectorTimerStatus } from '../store/timer/selector';
+import { selectorFirstTask, selectorTimerStatus } from '../store/timer/selector';
 
-const useCountdown = (): [() => void, () => void, () => void] => {
+const useCountdown = (): [() => void, () => void, () => void, () => void] => {
   const dispatch = useDispatch();
 
   const status = useSelector(selectorTimerStatus);
+  const task = useSelector(selectorFirstTask);
   const [intervalId, setIntervalId] = useState<NodeJS.Timer>();
   
   useEffect(() => {
     if (status === TimerStatusEnum.INIT || status === TimerStatusEnum.PAUSE) {
       clearInterval(intervalId);
     }
+  // eslint-disable-next-line
   }, [status]);
+
+  useEffect(() => {
+    if (task?.type === 'PAUSE') {
+      handleStartTimer();
+    }
+  }, [task?.type]);
 
   useEffect(() => {
     return () => clearInterval(intervalId);
@@ -30,7 +38,16 @@ const useCountdown = (): [() => void, () => void, () => void] => {
   }
 
   const handleStopTimer = () => {
-    dispatch(timerAction.clearTimer());
+    if (task.type === 'USER') {
+      dispatch(timerAction.clearTimer());
+    } else {
+      dispatch(timerAction.stopTimer());
+    }
+    clearInterval(intervalId);
+  }
+
+  const handleSkipPause = () => {
+    dispatch(timerAction.skipPause());
     clearInterval(intervalId);
   }
 
@@ -43,7 +60,7 @@ const useCountdown = (): [() => void, () => void, () => void] => {
     setIntervalId(interval);
   }
 
-  return [handleStartTimer, handleStopTimer, handlePauseTimer];
+  return [handleStartTimer, handleStopTimer, handlePauseTimer, handleSkipPause];
 };
 
 export { useCountdown };

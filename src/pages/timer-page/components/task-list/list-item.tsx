@@ -43,7 +43,7 @@ export const TaskItem = ({ name, count, id }: { name: string, count: number, id:
                 break;
             case ActionEnum.DELETE_TASK:
                 dispatch(confirmDialogAction.setMessage({
-                    message: 'Удалить?',
+                    message: 'Удалить задачу?',
                     onConfirm: () => {
                         dispatch(timerAction.onDeleteTask(id));
                         dispatch(timerAction.clearTimer());
@@ -72,6 +72,7 @@ export const TaskItem = ({ name, count, id }: { name: string, count: number, id:
             ref.current.focus();
             ref.current.setSelectionRange(0, taskName.length);
         }
+    // eslint-disable-next-line
     }, [isEditMode]);
 
     return (

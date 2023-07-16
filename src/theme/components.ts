@@ -50,5 +50,12 @@ export const components: Components<Omit<Theme, "components">> = {
         defaultProps: {
             fullWidth: false,
         }
+    },
+    MuiDialogActions: {
+        styleOverrides: {
+            root: {
+                justifyContent: 'center',
+            }
+        }
     }
 };

@@ -6,11 +6,14 @@ import { getDate } from "../../utils/get-date";
 interface ITaskItem {
     name: string;
     count: number;
+    countDone: number;
     id: string;
 }
 
 export interface IPauseTask {
     type: 'PAUSE';
+    name: string;
+    count: number;
 }
 
 export interface IUserTask extends ITaskItem {
@@ -43,7 +46,7 @@ interface ITimer {
     pauseTask: IPauseTask | null;
     playSound: boolean;
 
-    history: { [n in string]: IHistoryItem};
+    history: { [n in string]: IHistoryItem };
     week: 0 | 1 | 2 | string;
 }
 
@@ -66,7 +69,7 @@ const INITIAL_STATE: ITimer = {
     pauseTask: null,
     playSound: false,
 
-    history: localStorage.getItem('history') ? JSON.parse(localStorage.getItem('history') as string): {},
+    history: localStorage.getItem('history') ? JSON.parse(localStorage.getItem('history') as string) : {},
     week: 0,
 }
 
@@ -97,19 +100,23 @@ export const timerSlice = createSlice({
                     }
                     state.status = TimerStatusEnum.INIT;
                 } else {
-                    if (state.list[0].count > 1) {
-                        state.list[0].count--;
+                    if (state.list[0].countDone + 1 !== state.list[0].count) {
+                        state.list[0].countDone++;
                         if (state.list[0].type === 'USER') {
                             state.pauseTask = {
-                                type: 'PAUSE'
+                                type: 'PAUSE',
+                                name: state.list[0].name,
+                                count: state.list[0].countDone,
                             };
                         }
                     } else {
+                        state.pauseTask = {
+                            type: 'PAUSE',
+                            name: state.list[0].name,
+                            count: state.list[0].countDone,
+                        };
                         state.list = state.list.slice(1);
                         state.sumOfTime = state.list.reduce((res, cur) => res + cur.count * TIMER_MINUTES, 0);
-                        state.pauseTask = {
-                            type: 'PAUSE'
-                        };
                     }
                     state.pomodoroDone++;
                     state.taskTimer = {
@@ -119,7 +126,7 @@ export const timerSlice = createSlice({
                     state.status = TimerStatusEnum.PAUSE;
                     const currentDate = getDate();
 
-                    const currentHistory = state.history[currentDate] || {pomodoroDone: 0, pauseTime: 0, taskTime: 0, pauseCount: 0};
+                    const currentHistory = state.history[currentDate] || { pomodoroDone: 0, pauseTime: 0, taskTime: 0, pauseCount: 0 };
                     state.history[currentDate] = {
                         pomodoroDone: currentHistory.pomodoroDone + 1,
                         pauseTime: currentHistory.pauseTime,
@@ -165,7 +172,7 @@ export const timerSlice = createSlice({
             if (state.status === TimerStatusEnum.PAUSE_TASK) {
                 const currentDate = getDate();
 
-                const currentHistory = state.history[currentDate] || {pomodoroDone: 0, pauseTime: 0, taskTime: 0, pauseCount: 0};
+                const currentHistory = state.history[currentDate] || { pomodoroDone: 0, pauseTime: 0, taskTime: 0, pauseCount: 0 };
                 state.history[currentDate] = {
                     pomodoroDone: currentHistory.pomodoroDone,
                     taskTime: currentHistory.taskTime,
@@ -188,6 +195,7 @@ export const timerSlice = createSlice({
                 const task: IUserTask = {
                     name: state.taskName,
                     count: 1,
+                    countDone: 0,
                     id: crypto.randomUUID(),
                     type: 'USER',
                 };
@@ -226,6 +234,49 @@ export const timerSlice = createSlice({
         },
         setWeek: (state, { payload }: PayloadAction<0 | 1 | 2 | string>) => {
             state.week = payload;
+        },
+        addTime: (state) => {
+            state.taskTimer = {
+                minutes: state.taskTimer.minutes + 1,
+                seconds: state.taskTimer.seconds,
+            }
+        },
+        stopTimer: (state) => {
+            state.status = TimerStatusEnum.STOP;
+        },
+        doneTask: (state) => {
+            const currentDate = getDate();
+            const currentHistory = state.history[currentDate] || { pomodoroDone: 0, pauseTime: 0, taskTime: 0, pauseCount: 0 };
+
+            state.pauseTask = {
+                type: 'PAUSE',
+                name: state.list[0].name,
+                count: state.list[0].countDone,
+            };
+            state.list = state.list.slice(1);
+            state.sumOfTime = state.list.reduce((res, cur) => res + cur.count * TIMER_MINUTES, 0);
+
+            state.history[currentDate] = {
+                pomodoroDone: currentHistory.pomodoroDone + 1,
+                pauseTime: currentHistory.pauseTime + state.pauseTimer.minutes * 60 + state.pauseTimer.seconds,
+                taskTime: currentHistory.taskTime + (TIMER_MINUTES - state.taskTimer.minutes - 1) * 60 + (60 - state.taskTimer.seconds),
+                pauseCount: currentHistory.pauseCount + 1,
+            }
+
+            state.pomodoroDone++;
+            state.taskTimer = {
+                minutes: state.pomodoroDone % 4 === 0 ? LONG_PAUSE_MINUTES : PAUSE_MINUTES,
+                seconds: 0,
+            }
+            state.status = TimerStatusEnum.PAUSE;
+        },
+        skipPause: (state) => {
+            state.pauseTask = null;
+            state.taskTimer = {
+                minutes: TIMER_MINUTES,
+                seconds: 0,
+            }
+            state.status = TimerStatusEnum.INIT;
         }
     }
 })

@@ -8,6 +8,8 @@ interface ITimerProps {
     startTimer: () => void;
     stopTimer: () => void;
     pauseTimer: () => void;
+    doneTask: () => void;
+    skipPause: () => void;
 }
 
 export const TimerPage = (props: ITimerProps) => (
