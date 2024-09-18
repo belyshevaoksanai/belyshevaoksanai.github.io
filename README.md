@@ -1,1 +1,1 @@
-## [Посмотреть](https://belyshevaoksanai.github.io/pomodoro/timer)
+## [Посмотреть](https://belyshevaoksanai.github.io/pomodoro/)
