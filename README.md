@@ -1,1 +1,1 @@
-## [Посмотреть](https://plant-peach.vercel.app/)
+## [Посмотреть](https://belyshevaoksanai.github.io/pomodoro/timer)
